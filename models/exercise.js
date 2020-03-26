@@ -25,7 +25,10 @@ const ExerciseSchema = new Schema({
     sets: {
         type: Number
     }
+    
 });
+
+
 
 const Exercise = mongoose.model("Exercise", ExerciseSchema);
 
