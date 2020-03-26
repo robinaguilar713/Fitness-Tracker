@@ -3,7 +3,10 @@ const mongojs = require("mongojs");
 
 module.exports = function(app) {
 
+    let durationStart;
+
 app.post("/api/workouts", ({ body }, res) => {
+    durationStart = 0;
     db.Workout.create({})
     .then((dbExercise) => {
         res.json(dbExercise);
@@ -23,14 +26,29 @@ app.get("/api/workouts", (req, res) => {
     })
 });
 
+app.get("/api/workouts/range", (req, res) => {
+    db.Workout.find({})
+    .then(data => {
+        res.json(data);
+    })
+    .catch(err => {
+        res.json(err);
+    })
+});
+
 app.put("/api/workouts/:id", (req, res) => {
-    console.log(req.body);
-    db.Workout.findOneAndUpdate(
+
+    let data = req.body;
+
+    durationStart += data.duration;
+
+     db.Workout.findOneAndUpdate(
         {
             _id: mongojs.ObjectId(req.params.id)
         },
         {
-            $push: { exercises: req.body }
+            $push: { exercises: req.body },
+            totalDuration: durationStart
         },
         {
             new: true
